@@ -69,3 +69,51 @@ html {
     scroll-behavior: auto;
   }
 }
+/* VELORA ORBITAL LOGO */
+
+@keyframes veloraOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes veloraTwinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.velora-orbit {
+  animation: veloraOrbit 12s linear infinite;
+}
+
+.velora-orbit-reverse {
+  animation: veloraOrbit 16s linear infinite reverse;
+}
+
+.velora-orbit-slow {
+  animation: veloraOrbit 35s linear infinite;
+}
+
+.velora-twinkle {
+  animation: veloraTwinkle 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .velora-orbit,
+  .velora-orbit-reverse,
+  .velora-orbit-slow,
+  .velora-twinkle {
+    animation: none;
+  }
+}

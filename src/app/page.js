@@ -109,13 +109,63 @@ export default async function Home({ searchParams }) {
 
           </div>
 
-          {/* FLOATING OBJECT */}
+          {/* FLOATING ORBITAL LOGO */}
           <div className="flex items-center justify-center">
 
-            <div className="animate-float flex h-64 w-64 items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-zinc-700 to-black shadow-2xl md:h-96 md:w-96">
+            <div className="relative flex aspect-square w-full max-w-[480px] items-center justify-center">
 
-              <span className="text-8xl font-black md:text-[150px]">
-                V
+              {/* BACKGROUND GLOW */}
+              <div className="absolute inset-12 rounded-full bg-white/10 blur-[90px]" />
+
+              {/* ORBIT RING 1 */}
+              <div className="velora-orbit absolute inset-0 z-20">
+
+                <div className="absolute inset-x-0 top-[32%] h-[36%] -rotate-[30deg] rounded-[100%] border border-white/40">
+
+                  <div className="absolute -right-1 top-1/2 h-2 w-2 rounded-full bg-white shadow-[0_0_20px_white]" />
+
+                </div>
+
+              </div>
+
+              {/* ORBIT RING 2 */}
+              <div className="velora-orbit-reverse absolute inset-0 z-20">
+
+                <div className="absolute inset-x-0 top-[30%] h-[40%] rotate-[40deg] rounded-[100%] border border-white/20">
+
+                  <div className="absolute -left-1 top-1/2 h-2 w-2 rounded-full bg-white shadow-[0_0_15px_white]" />
+
+                </div>
+
+              </div>
+
+              {/* OUTER RING */}
+              <div className="velora-orbit-slow absolute inset-[8%] rounded-full border border-dashed border-white/15" />
+
+              {/* MAIN LOGO */}
+              <div className="animate-float relative z-10 flex aspect-square w-[72%] flex-col items-center justify-center overflow-hidden rounded-full border border-white/30 bg-gradient-to-br from-zinc-700 via-zinc-900 to-black shadow-[0_0_60px_rgba(255,255,255,0.12)]">
+
+                <span className="bg-gradient-to-br from-white via-zinc-400 to-white bg-clip-text text-[80px] font-black leading-none text-transparent drop-shadow-2xl sm:text-[120px] md:text-[160px]">
+                  V
+                </span>
+
+                <span className="mt-4 text-xs font-semibold tracking-[0.5em] text-zinc-300">
+                  VELORA
+                </span>
+
+              </div>
+
+              {/* SPARKLES */}
+              <span className="velora-twinkle absolute left-[12%] top-[15%] z-30 text-2xl text-white">
+                ✦
+              </span>
+
+              <span className="velora-twinkle absolute right-[8%] top-[22%] z-30 text-3xl text-white [animation-delay:1s]">
+                ✧
+              </span>
+
+              <span className="velora-twinkle absolute bottom-[15%] right-[14%] z-30 text-xl text-white [animation-delay:2s]">
+                ✦
               </span>
 
             </div>
@@ -123,6 +173,7 @@ export default async function Home({ searchParams }) {
           </div>
 
         </div>
+
       </section>
 
       {/* KATEGORI */}
@@ -172,6 +223,7 @@ export default async function Home({ searchParams }) {
           ))}
 
         </div>
+
       </section>
 
       {/* PRODUK */}
@@ -226,10 +278,11 @@ export default async function Home({ searchParams }) {
 
         {/* HASIL PENCARIAN */}
         {search && (
+
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
 
             <p className="text-sm text-zinc-400">
-              Hasil pencarian "{search}" — {products.length} produk
+              Hasil pencarian &quot;{search}&quot; — {products.length} produk
             </p>
 
             <a
@@ -240,6 +293,7 @@ export default async function Home({ searchParams }) {
             </a>
 
           </div>
+
         )}
 
         {/* PRODUCT GRID */}
@@ -331,12 +385,14 @@ export default async function Home({ searchParams }) {
             </p>
 
             {search && (
+
               <a
                 href="/#produk"
                 className="mt-6 inline-block rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-zinc-300"
               >
                 Show All Products
               </a>
+
             )}
 
           </div>
