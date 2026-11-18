@@ -42,3 +42,8 @@ next-env.d.ts
 
 # File bantuan generate password
 /DATABASE/generate_password.cjs
+
+# Environment variables
+.env
+.env.local
+.env.*.local

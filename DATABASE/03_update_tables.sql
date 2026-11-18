@@ -1,0 +1,8 @@
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS image_url TEXT;
+
+ALTER TABLE stores
+ADD COLUMN IF NOT EXISTS image_url TEXT;
+
+SELECT * FROM products;
+SELECT * FROM stores;
