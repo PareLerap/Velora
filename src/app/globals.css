@@ -117,3 +117,57 @@ html {
     animation: none;
   }
 }
+/* VELORA LOGIN BACKGROUND */
+
+@keyframes loginFloating {
+  0%, 100% {
+    transform: translate(0px, 0px)
+      rotate(var(--rotation, 0deg));
+  }
+
+  50% {
+    transform: translate(25px, -45px)
+      rotate(calc(var(--rotation, 0deg) + 20deg));
+  }
+}
+
+.login-floating-product {
+  opacity: 0.4;
+  border-radius: 30px;
+
+  mask-image: radial-gradient(
+    ellipse,
+    black 30%,
+    transparent 72%
+  );
+
+  animation: loginFloating 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.login-parallax {
+  transform: translate(
+    var(--mouse-x, 0px),
+    var(--mouse-y, 0px)
+  );
+
+  transition: transform 0.4s ease-out;
+}
+
+@media (max-width: 768px) {
+  .login-floating-product {
+    max-width: 150px;
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-floating-product {
+    animation: none;
+  }
+
+  .login-parallax {
+    transform: none;
+    transition: none;
+  }
+}
