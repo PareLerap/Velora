@@ -4,6 +4,12 @@ import { requireRole } from "@/lib/authorization";
 import { updateSellerStatus } from "@/queries/sellers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { removeProductByAdmin } from "@/queries/products";
+import {
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "@/queries/categories";
 
 export async function approveSeller(formData) {
   // MEMASTIKAN USER ADALAH ADMIN
@@ -152,4 +158,176 @@ export async function removeUser(formData) {
 
   redirect("/admin/users?success=deleted");
 }
+
+// MENAMBAHKAN KATEGORI
+export async function addCategory(formData) {
+  await requireRole("admin");
+
+  const name = String(
+    formData.get("name") || ""
+  ).trim();
+
+  const description = String(
+    formData.get("description") || ""
+  ).trim();
+
+  if (!name || name.length > 100 || description.length > 1000) {
+    redirect("/admin/categories?error=invalid");
+  }
+
+  let errorCode = null;
+
+  try {
+    await createCategory(name, description);
+  } catch (error) {
+    errorCode =
+      error.code === "23505"
+        ? "duplicate"
+        : "database";
+  }
+
+  if (errorCode) {
+    redirect(`/admin/categories?error=${errorCode}`);
+  }
+
+  revalidatePath("/admin/categories");
+  revalidatePath("/");
+
+  redirect("/admin/categories?success=created");
+}
+
+
+// MENGEDIT KATEGORI
+export async function editCategory(formData) {
+  await requireRole("admin");
+
+  const id = Number(formData.get("categoryId"));
+
+  const name = String(
+    formData.get("name") || ""
+  ).trim();
+
+  const description = String(
+    formData.get("description") || ""
+  ).trim();
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0 ||
+    id > 2147483647 ||
+    !name ||
+    name.length > 100 ||
+    description.length > 1000
+  ) {
+    redirect("/admin/categories?error=invalid");
+  }
+
+  let errorCode = null;
+
+  try {
+    const updated = await updateCategory(
+      id,
+      name,
+      description
+    );
+
+    if (!updated) {
+      errorCode = "not-found";
+    }
+
+  } catch (error) {
+    errorCode =
+      error.code === "23505"
+        ? "duplicate"
+        : "database";
+  }
+
+  if (errorCode) {
+    redirect(`/admin/categories?error=${errorCode}`);
+  }
+
+  revalidatePath("/admin/categories");
+  revalidatePath("/");
+
+  redirect("/admin/categories?success=updated");
+}
+
+
+// MENGHAPUS KATEGORI
+export async function removeCategory(formData) {
+  await requireRole("admin");
+
+  const id = Number(formData.get("categoryId"));
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0 ||
+    id > 2147483647
+  ) {
+    redirect("/admin/categories?error=invalid");
+  }
+
+  let errorCode = null;
+
+  try {
+    const deleted = await deleteCategory(id);
+
+    if (!deleted) {
+      errorCode = "not-deleted";
+    }
+
+  } catch (error) {
+    errorCode =
+      error.code === "23503"
+        ? "has-products"
+        : "database";
+  }
+
+  if (errorCode) {
+    redirect(`/admin/categories?error=${errorCode}`);
+  }
+
+  revalidatePath("/admin/categories");
+  revalidatePath("/");
+
+  redirect("/admin/categories?success=deleted");
+}
+// MENONAKTIFKAN PRODUK OLEH ADMIN
+export async function removeAdminProduct(formData) {
+  await requireRole("admin");
+
+  const id = Number(formData.get("productId"));
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0 ||
+    id > 2147483647
+  ) {
+    redirect("/admin/products?error=invalid");
+  }
+
+  let errorCode = null;
+
+  try {
+    const removed = await removeProductByAdmin(id);
+
+    if (!removed) {
+      errorCode = "not-removed";
+    }
+  } catch (error) {
+    errorCode = "database";
+  }
+
+  if (errorCode) {
+    redirect(`/admin/products?error=${errorCode}`);
+  }
+
+  revalidatePath("/admin/products");
+  revalidatePath("/products");
+  revalidatePath(`/products/${id}`);
+  revalidatePath("/");
+
+  redirect("/admin/products?success=removed");
+}
+
 

@@ -29,13 +29,13 @@ export default async function AdminPage() {
       icon: "📦",
       title: "Manage Products",
       desc: "Kelola produk marketplace",
-      href: null,
+      href: "/admin/products",
     },
     {
       icon: "📂",
       title: "Manage Categories",
       desc: "Kelola kategori produk",
-      href: null,
+      href: "/admin/categories",
     },
   ];
 
