@@ -1,24 +1,29 @@
 
 import Link from "next/link";
 import { requireRole } from "@/lib/authorization";
-import { logout } from "@/app/actions";
 import { getSellers } from "@/queries/sellers";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export default async function AdminPage() {
+  // VALIDASI ADMIN
   const user = await requireRole("admin");
+
+  // AMBIL DATA SELLER
   const sellers = await getSellers();
 
+  // HITUNG SELLER YANG MENUNGGU PERSETUJUAN
   const pendingCount = sellers.filter(
     (seller) => seller.status === "pending"
   ).length;
 
+  // MENU ADMIN
   const menus = [
     {
-  icon: "👥",
-  title: "Manage Users",
-  desc: "Kelola akun pengguna",
-  href: "/admin/users",
-},
+      icon: "👥",
+      title: "Manage Users",
+      desc: "Kelola akun pengguna",
+      href: "/admin/users",
+    },
     {
       icon: "🏪",
       title: "Seller Approval",
@@ -42,33 +47,13 @@ export default async function AdminPage() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
-
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            ADMIN DASHBOARD
-          </p>
-        </div>
-
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-zinc-300 active:scale-95"
-          >
-            Logout ↗
-          </button>
-        </form>
-
-      </nav>
+      {/* NAVBAR BERSAMA - TINGGI 80PX */}
+      <VeloraNavbar user={user} />
 
       {/* MAIN CONTENT */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
+        {/* HEADER */}
         <div className="animate-fade-up">
 
           <p className="mb-4 text-xs tracking-[0.3em] text-zinc-400">
@@ -91,6 +76,7 @@ export default async function AdminPage() {
             href="/admin/sellers"
             className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5 transition-all hover:bg-yellow-500/20"
           >
+
             <div>
               <p className="font-bold text-yellow-400">
                 Seller Approval Required
@@ -104,6 +90,7 @@ export default async function AdminPage() {
             <span className="text-sm font-semibold text-yellow-400">
               Review Now ↗
             </span>
+
           </Link>
         )}
 
@@ -111,8 +98,11 @@ export default async function AdminPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
           {menus.map((menu, index) => {
+
             const content = (
               <>
+
+                {/* ICON AND NUMBER */}
                 <div className="flex items-center justify-between">
 
                   <span className="text-4xl grayscale">
@@ -125,6 +115,7 @@ export default async function AdminPage() {
 
                 </div>
 
+                {/* MENU INFORMATION */}
                 <h3 className="mt-8 text-xl font-bold">
                   {menu.title}
                 </h3>
@@ -133,14 +124,17 @@ export default async function AdminPage() {
                   {menu.desc}
                 </p>
 
-                {/* PENDING COUNT */}
+                {/* SELLER APPROVAL COUNT */}
                 {menu.title === "Seller Approval" &&
                   pendingCount > 0 && (
+
                     <div className="mt-4 inline-flex rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-xs text-yellow-400">
                       {pendingCount} Pending
                     </div>
+
                   )}
 
+                {/* MENU ACTION */}
                 <div className="mt-6 flex items-center justify-between border-t border-zinc-800 pt-4">
 
                   <span className="text-xs text-zinc-400">
@@ -154,6 +148,7 @@ export default async function AdminPage() {
                   )}
 
                 </div>
+
               </>
             );
 
@@ -161,6 +156,7 @@ export default async function AdminPage() {
               "group block rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300";
 
             return menu.href ? (
+
               <Link
                 key={menu.title}
                 href={menu.href}
@@ -168,14 +164,18 @@ export default async function AdminPage() {
               >
                 {content}
               </Link>
+
             ) : (
+
               <div
                 key={menu.title}
                 className={cardClass}
               >
                 {content}
               </div>
+
             );
+
           })}
 
         </div>

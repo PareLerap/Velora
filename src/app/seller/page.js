@@ -1,58 +1,43 @@
 
+import Link from "next/link";
 import { requireApprovedSeller } from "@/lib/authorization";
-import { logout } from "@/app/actions";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export default async function SellerPage() {
   const user = await requireApprovedSeller();
 
+  // MENU SELLER
   const menus = [
     {
       icon: "🏪",
       title: "Manage Store",
       desc: "Kelola informasi dan profil toko",
+      href: "/seller/store",
     },
     {
       icon: "📦",
       title: "Manage Products",
       desc: "Tambah, edit, dan hapus produk",
+      href: "/seller/products",
     },
     {
       icon: "🛒",
       title: "Manage Orders",
       desc: "Kelola pesanan pelanggan",
+      href: "/seller/orders",
     },
   ];
 
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
-
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            SELLER DASHBOARD
-          </p>
-        </div>
-
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-zinc-300 active:scale-95"
-          >
-            Logout ↗
-          </button>
-        </form>
-
-      </nav>
+      {/* NAVBAR BERSAMA - TINGGI 80PX */}
+      <VeloraNavbar user={user} />
 
       {/* MAIN CONTENT */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
+        {/* HEADER */}
         <div className="animate-fade-up">
 
           <p className="mb-4 text-xs tracking-[0.3em] text-zinc-400">
@@ -67,6 +52,7 @@ export default async function SellerPage() {
             Manage your store and grow your business with VELORA.
           </p>
 
+          {/* SELLER STATUS */}
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs font-semibold text-green-400">
 
             <span className="h-2 w-2 rounded-full bg-green-400" />
@@ -81,11 +67,13 @@ export default async function SellerPage() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
 
           {menus.map((menu, index) => (
+
             <div
               key={menu.title}
               className="group rounded-3xl border border-zinc-800 bg-zinc-900 p-8 transition-all duration-500 hover:-translate-y-2 hover:border-zinc-500"
             >
 
+              {/* ICON AND NUMBER */}
               <div className="flex items-center justify-between">
 
                 <span className="text-4xl grayscale">
@@ -98,6 +86,7 @@ export default async function SellerPage() {
 
               </div>
 
+              {/* MENU INFORMATION */}
               <h3 className="mt-8 text-2xl font-bold">
                 {menu.title}
               </h3>
@@ -106,13 +95,21 @@ export default async function SellerPage() {
                 {menu.desc}
               </p>
 
+              {/* MENU LINK */}
               <div className="mt-8 border-t border-zinc-800 pt-4">
-                <span className="text-xs text-zinc-500">
-                  Coming soon
-                </span>
+
+                <Link
+                  href={menu.href}
+                  className="flex items-center justify-between text-sm text-zinc-300 transition hover:text-white"
+                >
+                  <span>Open Menu</span>
+                  <span>↗</span>
+                </Link>
+
               </div>
 
             </div>
+
           ))}
 
         </div>

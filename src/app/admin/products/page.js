@@ -4,13 +4,14 @@ import Image from "next/image";
 import { requireRole } from "@/lib/authorization";
 import { getAdminProducts } from "@/queries/products";
 import { removeAdminProduct } from "@/app/admin/actions";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export const dynamic = "force-dynamic";
 
 export default async function ManageProductsPage({
   searchParams,
 }) {
-  await requireRole("admin");
+  const admin = await requireRole("admin");
 
   const products = await getAdminProducts();
   const params = await searchParams;
@@ -63,6 +64,7 @@ export default async function ManageProductsPage({
     return matchesSearch && matchesStatus;
   });
 
+  // FORMAT HARGA
   const formatPrice = (price) =>
     new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -73,28 +75,10 @@ export default async function ManageProductsPage({
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
+      {/* NAVBAR BERSAMA - 80PX */}
+      <VeloraNavbar user={admin} />
 
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            ADMIN DASHBOARD
-          </p>
-        </div>
-
-        <Link
-          href="/admin"
-          className="text-sm text-zinc-400 transition-colors hover:text-white"
-        >
-          ← Back to Dashboard
-        </Link>
-
-      </nav>
-
+      {/* MAIN CONTENT */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
         {/* HEADER */}
@@ -104,13 +88,20 @@ export default async function ManageProductsPage({
             PRODUCT MANAGEMENT
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <h1 className="text-4xl font-black tracking-tight md:text-6xl">
             Manage Products.
-          </h2>
+          </h1>
 
           <p className="mt-4 text-zinc-400">
             Monitor and moderate all marketplace products.
           </p>
+
+          <Link
+            href="/admin"
+            className="mt-6 inline-block text-sm text-zinc-400 transition hover:text-white"
+          >
+            ← Back to Admin Dashboard
+          </Link>
 
         </div>
 
@@ -155,9 +146,9 @@ export default async function ManageProductsPage({
                 {item.title}
               </p>
 
-              <h3 className="mt-3 text-4xl font-black">
+              <h2 className="mt-3 text-4xl font-black">
                 {item.count}
-              </h3>
+              </h2>
 
             </div>
           ))}
@@ -184,7 +175,7 @@ export default async function ManageProductsPage({
             name="status"
             aria-label="Filter status produk"
             defaultValue={status}
-            className="rounded-full border border-zinc-700 bg-zinc-900 px-6 py-4 text-sm outline-none focus:border-white"
+            className="rounded-full border border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-white outline-none focus:border-white"
           >
 
             <option value="all">All Status</option>
@@ -212,7 +203,7 @@ export default async function ManageProductsPage({
         {/* PRODUCT LIST */}
         <section className="mt-12">
 
-          <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 
             <h2 className="text-2xl font-black">
               All Products.
@@ -285,7 +276,7 @@ export default async function ManageProductsPage({
 
                 </div>
 
-                {/* STATUS */}
+                {/* PRODUCT STATUS */}
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
 
                   <span className="text-xs text-zinc-500">
@@ -304,7 +295,7 @@ export default async function ManageProductsPage({
 
                 </div>
 
-                {/* DESCRIPTION */}
+                {/* PRODUCT DESCRIPTION */}
                 <details className="mt-5 rounded-xl border border-zinc-800 p-4">
 
                   <summary className="cursor-pointer text-sm font-semibold">
@@ -312,7 +303,8 @@ export default async function ManageProductsPage({
                   </summary>
 
                   <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-400">
-                    {product.description || "No description available."}
+                    {product.description ||
+                      "No description available."}
                   </p>
 
                 </details>
@@ -322,6 +314,8 @@ export default async function ManageProductsPage({
 
                   {product.status === "active" ? (
                     <>
+
+                      {/* VIEW PRODUCT */}
                       <Link
                         href={`/products/${product.id}`}
                         className="block rounded-full border border-zinc-700 px-5 py-3 text-center text-sm font-semibold transition-all hover:bg-white hover:text-black"
@@ -329,6 +323,7 @@ export default async function ManageProductsPage({
                         View Product ↗
                       </Link>
 
+                      {/* REMOVE PRODUCT */}
                       <details className="rounded-xl border border-red-500/30 p-4">
 
                         <summary className="cursor-pointer list-none text-sm font-semibold text-red-400">
@@ -348,6 +343,7 @@ export default async function ManageProductsPage({
                           Riwayat transaksi tetap tersimpan.
                         </p>
 
+                        {/* CONFIRM REMOVE */}
                         <form
                           action={removeAdminProduct}
                           className="mt-5"
@@ -372,9 +368,11 @@ export default async function ManageProductsPage({
 
                     </>
                   ) : (
+
                     <div className="rounded-xl border border-zinc-800 bg-black/40 p-4 text-xs text-zinc-500">
                       Product Inactive — Not visible in marketplace.
                     </div>
+
                   )}
 
                 </div>

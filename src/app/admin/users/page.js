@@ -3,6 +3,7 @@ import DeleteUserButton from "@/components/DeleteUserButton";
 import Link from "next/link";
 import { requireRole } from "@/lib/authorization";
 import { getUsers } from "@/queries/users";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export const dynamic = "force-dynamic";
 
@@ -57,27 +58,8 @@ export default async function ManageUsersPage({ searchParams }) {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
-
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            ADMIN DASHBOARD
-          </p>
-        </div>
-
-        <Link
-          href="/admin"
-          className="text-sm text-zinc-400 transition-colors hover:text-white"
-        >
-          ← Back to Dashboard
-        </Link>
-
-      </nav>
+      {/* NAVBAR BERSAMA - 80PX */}
+      <VeloraNavbar user={admin} />
 
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
@@ -88,13 +70,20 @@ export default async function ManageUsersPage({ searchParams }) {
             USER MANAGEMENT
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <h1 className="text-4xl font-black tracking-tight md:text-6xl">
             Manage Users.
-          </h2>
+          </h1>
 
           <p className="mt-4 text-zinc-400">
             Manage all registered marketplace accounts.
           </p>
+
+          <Link
+            href="/admin"
+            className="mt-6 inline-block text-sm text-zinc-400 transition hover:text-white"
+          >
+            ← Back to Admin Dashboard
+          </Link>
 
         </div>
 
@@ -153,9 +142,9 @@ export default async function ManageUsersPage({ searchParams }) {
                 {item.title}
               </p>
 
-              <h3 className="mt-3 text-4xl font-black">
+              <h2 className="mt-3 text-4xl font-black">
                 {item.count}
-              </h3>
+              </h2>
 
             </div>
           ))}
@@ -209,7 +198,7 @@ export default async function ManageUsersPage({ searchParams }) {
         {/* USER LIST */}
         <section className="mt-12">
 
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between gap-4">
 
             <h2 className="text-2xl font-black">
               Registered Users.
@@ -282,7 +271,6 @@ export default async function ManageUsersPage({ searchParams }) {
                       <span className="font-semibold text-white">
                         {user.store_name || "Belum ada toko"}
                       </span>
-
                     </p>
 
                     <p className="mt-2 text-xs text-zinc-400">
@@ -301,7 +289,6 @@ export default async function ManageUsersPage({ searchParams }) {
                       >
                         {user.seller_status || "Unknown"}
                       </span>
-
                     </p>
 
                   </div>

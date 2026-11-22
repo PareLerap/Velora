@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/authorization";
 import { getCategories } from "@/queries/categories";
+import VeloraNavbar from "@/components/VeloraNavbar";
+
 import {
   addCategory,
   editCategory,
@@ -13,27 +15,32 @@ export const dynamic = "force-dynamic";
 export default async function ManageCategoriesPage({
   searchParams,
 }) {
-  await requireRole("admin");
+  const admin = await requireRole("admin");
 
   const categories = await getCategories();
   const params = await searchParams;
 
+  // STATISTIK
   const totalProducts = categories.reduce(
-    (total, category) => total + Number(category.total_products),
+    (total, category) =>
+      total + Number(category.total_products),
     0
   );
 
+  // PESAN BERHASIL
   const successMessages = {
     created: "Kategori berhasil ditambahkan.",
     updated: "Kategori berhasil diperbarui.",
     deleted: "Kategori berhasil dihapus.",
   };
 
+  // PESAN ERROR
   const errorMessages = {
     invalid: "Data kategori tidak valid.",
     duplicate: "Nama kategori sudah digunakan.",
     "not-found": "Kategori tidak ditemukan.",
-    "not-deleted": "Kategori masih digunakan produk atau tidak ditemukan.",
+    "not-deleted":
+      "Kategori masih digunakan produk atau tidak ditemukan.",
     "has-products": "Kategori masih digunakan oleh produk.",
     database: "Terjadi kesalahan pada database.",
   };
@@ -56,28 +63,10 @@ export default async function ManageCategoriesPage({
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
+      {/* NAVBAR BERSAMA - 80PX */}
+      <VeloraNavbar user={admin} />
 
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            ADMIN DASHBOARD
-          </p>
-        </div>
-
-        <Link
-          href="/admin"
-          className="text-sm text-zinc-400 transition-colors hover:text-white"
-        >
-          ← Back to Dashboard
-        </Link>
-
-      </nav>
-
+      {/* MAIN CONTENT */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
         {/* HEADER */}
@@ -87,13 +76,20 @@ export default async function ManageCategoriesPage({
             CATEGORY MANAGEMENT
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <h1 className="text-4xl font-black tracking-tight md:text-6xl">
             Manage Categories.
-          </h2>
+          </h1>
 
           <p className="mt-4 text-zinc-400">
             Organize and manage marketplace categories.
           </p>
+
+          <Link
+            href="/admin"
+            className="mt-6 inline-block text-sm text-zinc-400 transition hover:text-white"
+          >
+            ← Back to Admin Dashboard
+          </Link>
 
         </div>
 
@@ -120,6 +116,7 @@ export default async function ManageCategoriesPage({
         {/* STATISTICS */}
         <div className="mt-10 grid grid-cols-2 gap-4">
 
+          {/* TOTAL CATEGORIES */}
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all hover:-translate-y-1 hover:border-zinc-500">
 
             <p className="text-xs text-zinc-500">
@@ -130,12 +127,13 @@ export default async function ManageCategoriesPage({
               Total Categories
             </p>
 
-            <h3 className="mt-3 text-4xl font-black">
+            <h2 className="mt-3 text-4xl font-black">
               {categories.length}
-            </h3>
+            </h2>
 
           </div>
 
+          {/* TOTAL PRODUCTS */}
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all hover:-translate-y-1 hover:border-zinc-500">
 
             <p className="text-xs text-zinc-500">
@@ -146,15 +144,15 @@ export default async function ManageCategoriesPage({
               Total Products
             </p>
 
-            <h3 className="mt-3 text-4xl font-black">
+            <h2 className="mt-3 text-4xl font-black">
               {totalProducts}
-            </h3>
+            </h2>
 
           </div>
 
         </div>
 
-        {/* ADD CATEGORY */}
+        {/* ADD NEW CATEGORY */}
         <details className="group mt-10 rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
           <summary className="flex cursor-pointer list-none items-center justify-between font-bold">
@@ -172,6 +170,7 @@ export default async function ManageCategoriesPage({
             className="mt-6 space-y-5 border-t border-zinc-800 pt-6"
           >
 
+            {/* CATEGORY NAME */}
             <div>
 
               <label
@@ -193,6 +192,7 @@ export default async function ManageCategoriesPage({
 
             </div>
 
+            {/* CATEGORY DESCRIPTION */}
             <div>
 
               <label
@@ -213,6 +213,7 @@ export default async function ManageCategoriesPage({
 
             </div>
 
+            {/* CREATE BUTTON */}
             <button
               type="submit"
               className="rounded-full bg-white px-8 py-4 text-sm font-bold text-black transition-all hover:bg-zinc-300 active:scale-95"
@@ -227,7 +228,7 @@ export default async function ManageCategoriesPage({
         {/* CATEGORY LIST */}
         <section className="mt-12">
 
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 
             <h2 className="text-2xl font-black">
               All Categories.
@@ -242,6 +243,7 @@ export default async function ManageCategoriesPage({
           <div className="grid gap-5 md:grid-cols-2">
 
             {categories.map((category) => (
+
               <div
                 key={category.id}
                 className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-zinc-500"
@@ -252,10 +254,14 @@ export default async function ManageCategoriesPage({
 
                   <div className="flex min-w-0 items-center gap-4">
 
+                    {/* CATEGORY ICON */}
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-black text-2xl font-black">
-                      {category.category_name.charAt(0).toUpperCase()}
+                      {category.category_name
+                        .charAt(0)
+                        .toUpperCase()}
                     </div>
 
+                    {/* CATEGORY DETAILS */}
                     <div className="min-w-0 break-words">
 
                       <h3 className="text-xl font-bold">
@@ -270,14 +276,17 @@ export default async function ManageCategoriesPage({
 
                   </div>
 
+                  {/* PRODUCT COUNT */}
                   <span className="shrink-0 rounded-full border border-zinc-700 px-3 py-2 text-xs text-zinc-300">
                     {category.total_products} Products
                   </span>
 
                 </div>
 
+                {/* CATEGORY DESCRIPTION */}
                 <p className="mt-5 whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-400">
-                  {category.description || "No description available."}
+                  {category.description ||
+                    "No description available."}
                 </p>
 
                 {/* CATEGORY ACTIONS */}
@@ -301,6 +310,7 @@ export default async function ManageCategoriesPage({
                         value={category.id}
                       />
 
+                      {/* EDIT NAME */}
                       <label className="block text-sm">
                         Category Name
 
@@ -314,18 +324,22 @@ export default async function ManageCategoriesPage({
                         />
                       </label>
 
+                      {/* EDIT DESCRIPTION */}
                       <label className="block text-sm">
                         Description
 
                         <textarea
                           name="description"
-                          defaultValue={category.description || ""}
+                          defaultValue={
+                            category.description || ""
+                          }
                           rows={3}
                           maxLength={1000}
                           className={`${inputClass} mt-2`}
                         />
                       </label>
 
+                      {/* SAVE CHANGES */}
                       <button
                         type="submit"
                         className="w-full rounded-full bg-white py-3 text-sm font-bold text-black transition-all hover:bg-zinc-300 active:scale-95"
@@ -340,6 +354,7 @@ export default async function ManageCategoriesPage({
                   {/* DELETE CATEGORY */}
                   {Number(category.total_products) > 0 ? (
 
+                    // CATEGORY IN USE
                     <div className="rounded-xl border border-zinc-800 bg-black/40 p-4">
 
                       <p className="text-xs text-zinc-500">
@@ -350,6 +365,7 @@ export default async function ManageCategoriesPage({
 
                   ) : (
 
+                    // CATEGORY NOT IN USE
                     <details className="rounded-xl border border-red-500/30 p-4">
 
                       <summary className="cursor-pointer list-none text-sm font-semibold text-red-400">
@@ -395,12 +411,14 @@ export default async function ManageCategoriesPage({
                 </div>
 
               </div>
+
             ))}
 
           </div>
 
           {/* EMPTY STATE */}
           {categories.length === 0 && (
+
             <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-12 text-center">
 
               <h3 className="text-xl font-bold">
@@ -412,6 +430,7 @@ export default async function ManageCategoriesPage({
               </p>
 
             </div>
+
           )}
 
         </section>

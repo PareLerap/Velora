@@ -1,14 +1,31 @@
 
+import Link from "next/link";
+import pool from "@/lib/db";
 import { getProductById } from "@/queries/products";
+import { getSession } from "@/lib/auth";
+import { buyNow } from "./actions";
 import { notFound } from "next/navigation";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductDetail({ params }) {
-  const { id } = await params;
+function formatPrice(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
 
+export default async function ProductDetail({
+  params,
+  searchParams,
+}) {
+  const { id } = await params;
+  const query = (await searchParams) || {};
   const productId = Number(id);
 
+  // VALIDASI ID PRODUK
   if (
     !/^\d+$/.test(id) ||
     !Number.isInteger(productId) ||
@@ -18,40 +35,63 @@ export default async function ProductDetail({ params }) {
     notFound();
   }
 
+  // DATA PRODUK DAN SESSION
   const product = await getProductById(productId);
+  const user = await getSession();
 
   if (!product) {
     notFound();
   }
 
+  const isBuyer = user?.role === "buyer";
+  const isAvailable = Number(product.stock) > 0;
+
+  // CEK PESANAN BERHASIL
+  const orderId = Number(query.order_id);
+  let orderSuccessful = false;
+
+  if (
+    isBuyer &&
+    Number.isSafeInteger(orderId) &&
+    orderId > 0
+  ) {
+    const result = await pool.query(
+      `SELECT o.id
+       FROM orders o
+       JOIN order_items oi ON oi.order_id = o.id
+       WHERE o.id = $1
+         AND o.user_id = $2
+         AND oi.product_id = $3
+       LIMIT 1`,
+      [orderId, user.id, productId]
+    );
+
+    orderSuccessful = result.rows.length > 0;
+  }
+
+  const checkoutError =
+    typeof query.checkout_error === "string"
+      ? query.checkout_error
+      : null;
+
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-16">
-
-        <div className="flex items-center justify-between">
-
-          <a href="/" className="text-2xl font-black tracking-[0.25em]">
-            VELORA
-          </a>
-
-          <a
-            href="/#produk"
-            className="text-sm text-zinc-400 transition-colors hover:text-white"
-          >
-            ← Back to Shopping
-          </a>
-
-        </div>
-
-      </nav>
+      {/* NAVBAR BERSAMA - 80PX */}
+      <VeloraNavbar user={user} />
 
       {/* PRODUCT DETAIL */}
       <main className="mx-auto max-w-7xl px-6 py-16 md:px-16">
 
+        {/* BREADCRUMB */}
         <p className="mb-10 text-sm text-zinc-500">
-          Home / {product.category_name} / {product.product_name}
+          <Link href="/" className="hover:text-white">
+            Home
+          </Link>
+          {" / "}
+          {product.category_name}
+          {" / "}
+          {product.product_name}
         </p>
 
         <div className="grid items-start gap-12 lg:grid-cols-2">
@@ -92,16 +132,14 @@ export default async function ProductDetail({ params }) {
               Sold by {product.store_name}
             </p>
 
+            {/* PRICE */}
             <p className="mt-8 text-3xl font-bold">
-              {Number(product.price).toLocaleString("id-ID", {
-                style: "currency",
-                currency: "IDR",
-                maximumFractionDigits: 0,
-              })}
+              {formatPrice(product.price)}
             </p>
 
+            {/* STOCK */}
             <div className="mt-6 inline-flex rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-300">
-              {product.stock > 0
+              {isAvailable
                 ? `In Stock — ${product.stock} tersedia`
                 : "Out of Stock"}
             </div>
@@ -114,22 +152,192 @@ export default async function ProductDetail({ params }) {
               </h2>
 
               <p className="leading-relaxed text-zinc-400">
-                {product.description || "Belum ada deskripsi produk."}
+                {product.description ||
+                  "Belum ada deskripsi produk."}
               </p>
 
             </div>
 
-            {/* LOGIN BUTTON */}
-            <a
-              href="/login"
-              className="mt-10 block rounded-full bg-white px-8 py-4 text-center font-bold text-black transition-all duration-300 hover:bg-zinc-300 active:scale-95"
-            >
-              Login to Shop ↗
-            </a>
+            {/* CHECKOUT SECTION */}
+            <div className="mt-10">
 
-            <p className="mt-4 text-center text-xs text-zinc-500">
-              Silakan login untuk melakukan pembelian.
-            </p>
+              {!user ? (
+
+                /* BELUM LOGIN */
+                <>
+                  <Link
+                    href="/login"
+                    className="block rounded-full bg-white px-8 py-4 text-center font-bold text-black transition hover:bg-zinc-300"
+                  >
+                    Login to Shop ↗
+                  </Link>
+
+                  <p className="mt-4 text-center text-xs text-zinc-500">
+                    Silakan login untuk melakukan pembelian.
+                  </p>
+                </>
+
+              ) : isBuyer ? (
+
+                /* BUYER */
+                <>
+
+                  <div className="mb-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-5">
+
+                    <p className="text-sm font-bold text-green-400">
+                      ✓ Buyer Account Active
+                    </p>
+
+                    <p className="mt-2 text-sm text-zinc-300">
+                      Selamat datang, {user.name}!
+                    </p>
+
+                    <p className="mt-1 text-xs text-zinc-400">
+                      Kamu bisa melakukan pembelian produk.
+                    </p>
+
+                  </div>
+
+                  {/* SUCCESS NOTIFICATION */}
+                  {orderSuccessful && (
+                    <div
+                      role="status"
+                      className="mb-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-6"
+                    >
+                      <h3 className="text-lg font-bold text-green-400">
+                        ✓ Order Berhasil!
+                      </h3>
+
+                      <p className="mt-3 text-sm text-zinc-300">
+                        Pesanan #{orderId} berhasil dibuat.
+                      </p>
+
+                      <p className="mt-2 text-sm text-zinc-400">
+                        Pesanan sudah tersimpan dan menunggu
+                        diproses oleh Seller.
+                      </p>
+
+                      <Link
+                        href="/orders"
+                        className="mt-5 inline-block rounded-full border border-green-500/40 px-5 py-3 text-sm font-bold text-green-400 transition hover:bg-green-500/10"
+                      >
+                        View My Orders ↗
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* ERROR NOTIFICATION */}
+                  {checkoutError && (
+                    <div
+                      role="alert"
+                      className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5"
+                    >
+                      <p className="text-sm text-red-400">
+                        {checkoutError === "stock"
+                          ? "Stok produk tidak mencukupi."
+                          : "Produk tidak tersedia untuk pembelian."}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* BUY NOW */}
+                  {isAvailable ? (
+                    <form action={buyNow} className="space-y-5">
+
+                      <input
+                        type="hidden"
+                        name="product_id"
+                        value={product.id}
+                      />
+
+                      <div>
+                        <label
+                          htmlFor="quantity"
+                          className="mb-3 block text-sm font-semibold text-zinc-300"
+                        >
+                          Quantity
+                        </label>
+
+                        <input
+                          id="quantity"
+                          type="number"
+                          name="quantity"
+                          min="1"
+                          max={Math.min(10, Number(product.stock))}
+                          defaultValue="1"
+                          required
+                          className="w-28 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white outline-none focus:border-white"
+                        />
+
+                        <p className="mt-3 text-xs text-zinc-500">
+                          Maksimal 10 unit per transaksi,
+                          sesuai stok tersedia.
+                        </p>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full rounded-full bg-white px-8 py-4 text-center font-bold text-black transition-all duration-300 hover:bg-zinc-300 active:scale-95"
+                      >
+                        Buy Now ↗
+                      </button>
+
+                      <p className="text-center text-xs text-zinc-500">
+                        Pesanan akan langsung dibuat setelah
+                        menekan Buy Now.
+                      </p>
+
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full cursor-not-allowed rounded-full bg-zinc-700 px-8 py-4 font-bold text-zinc-300"
+                      >
+                        Out of Stock
+                      </button>
+
+                      <p className="text-center text-xs text-zinc-500">
+                        Produk sedang tidak tersedia.
+                      </p>
+
+                    </div>
+                  )}
+
+                </>
+
+              ) : (
+
+                /* SELLER / ADMIN */
+                <div className="rounded-2xl border border-zinc-700 bg-zinc-900 p-6">
+
+                  <p className="text-sm font-bold text-white">
+                    Account: {user.role.toUpperCase()}
+                  </p>
+
+                  <p className="mt-3 text-sm text-zinc-400">
+                    Kamu sedang login sebagai {user.name}.
+                    Pembelian hanya tersedia untuk akun Buyer.
+                  </p>
+
+                  <Link
+                    href={
+                      user.role === "admin"
+                        ? "/admin"
+                        : "/seller"
+                    }
+                    className="mt-5 inline-block rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:bg-zinc-300"
+                  >
+                    Back to Dashboard ↗
+                  </Link>
+
+                </div>
+
+              )}
+
+            </div>
 
           </div>
 

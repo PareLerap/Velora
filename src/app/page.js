@@ -1,7 +1,8 @@
 
+import Link from "next/link";
 import { getProducts } from "@/queries/products";
 import { getSession } from "@/lib/auth";
-import { logout } from "./actions";
+import VeloraNavbar from "@/components/VeloraNavbar";
 import { getAccountPath } from "@/lib/authorization";
 import { redirect } from "next/navigation";
 
@@ -11,117 +12,23 @@ export default async function Home({ searchParams }) {
   const params = await searchParams;
 
   const search =
-    typeof params?.search === "string" ? params.search : "";
+    typeof params?.search === "string"
+      ? params.search
+      : "";
 
   const products = await getProducts(search);
   const user = await getSession();
+
+  // Admin dan Seller diarahkan ke dashboard masing-masing
   if (user && ["admin", "seller"].includes(user.role)) {
-  redirect(await getAccountPath(user));
-}
+    redirect(await getAccountPath(user));
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-black/80 px-4 py-4 backdrop-blur-xl md:px-12">
-
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
-
-          {/* LOGO */}
-          <a
-            href="/"
-            className="text-xl font-black tracking-[0.25em] transition-opacity hover:opacity-60 md:text-2xl"
-          >
-            VELORA
-          </a>
-
-          {/* NAVIGATION */}
-          <div className="hidden items-center gap-10 md:flex">
-
-            <a
-              href="/"
-              className="text-sm font-medium transition-colors hover:text-gray-400"
-            >
-              Home
-            </a>
-
-            <a
-              href="#produk"
-              className="text-sm font-medium transition-colors hover:text-gray-400"
-            >
-              Produk
-            </a>
-
-            <a
-              href="#kategori"
-              className="text-sm font-medium transition-colors hover:text-gray-400"
-            >
-              Kategori
-            </a>
-
-          </div>
-
-          {/* AUTH BUTTON */}
-          <div className="flex items-center gap-3 md:gap-5">
-
-            {user ? (
-
-              <>
-
-                {/* USER INFORMATION */}
-                <div className="min-w-0 text-right">
-
-                  <p className="max-w-[100px] truncate text-xs font-semibold md:max-w-[180px] md:text-sm">
-                    Hello, {user.name}!
-                  </p>
-
-                  <p className="mt-1 text-[10px] uppercase tracking-widest text-zinc-400">
-                    {user.role}
-                  </p>
-
-                </div>
-
-                {/* LOGOUT */}
-                <form action={logout}>
-
-                  <button
-                    type="submit"
-                    className="rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-zinc-300 active:scale-95 md:px-5"
-                  >
-                    Logout ↗
-                  </button>
-
-                </form>
-
-              </>
-
-            ) : (
-
-              <>
-
-                <a
-                  href="/login"
-                  className="text-sm font-medium transition-colors hover:text-gray-400"
-                >
-                  Login
-                </a>
-
-                <a
-                  href="/register"
-                  className="rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-zinc-300 active:scale-95 md:px-5"
-                >
-                  Daftar ↗
-                </a>
-
-              </>
-
-            )}
-
-          </div>
-
-        </div>
-
-      </nav>
+      {/* NAVBAR BERSAMA - TINGGI 80PX */}
+      <VeloraNavbar user={user} />
 
       {/* HERO SECTION */}
       <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-black px-8 py-24 text-white md:px-20">
@@ -149,7 +56,6 @@ export default async function Home({ searchParams }) {
               <span className="text-gray-500">
                 In One Place.
               </span>
-
             </h1>
 
             <p className="mt-8 max-w-md leading-relaxed text-gray-400">
@@ -285,7 +191,7 @@ export default async function Home({ searchParams }) {
 
       </section>
 
-      {/* PRODUK */}
+      {/* PRODUCTS SECTION */}
       <section
         id="produk"
         className="scroll-mt-24 border-t border-white/10 bg-black px-6 py-20 md:px-16"
@@ -293,7 +199,7 @@ export default async function Home({ searchParams }) {
 
         {/* SEARCH BAR */}
         <form
-          action="/#produk"
+          action="/"
           method="GET"
           className="mb-12 flex gap-3"
         >
@@ -326,16 +232,16 @@ export default async function Home({ searchParams }) {
             Featured Products.
           </h2>
 
-          <a
+          <Link
             href="/products"
             className="shrink-0 text-sm text-zinc-400 transition-colors hover:text-white"
           >
             Lihat Semua ↗
-          </a>
+          </Link>
 
         </div>
 
-        {/* HASIL PENCARIAN */}
+        {/* SEARCH RESULTS */}
         {search && (
 
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -344,12 +250,12 @@ export default async function Home({ searchParams }) {
               Hasil pencarian &quot;{search}&quot; — {products.length} produk
             </p>
 
-            <a
+            <Link
               href="/#produk"
               className="text-sm text-white underline hover:text-zinc-400"
             >
               Reset pencarian
-            </a>
+            </Link>
 
           </div>
 
@@ -365,7 +271,7 @@ export default async function Home({ searchParams }) {
               className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 transition-all duration-500 hover:-translate-y-2 hover:border-zinc-500 hover:shadow-xl hover:shadow-white/5"
             >
 
-              {/* GAMBAR PRODUK */}
+              {/* PRODUCT IMAGE */}
               <div className="relative flex h-64 items-center justify-center overflow-hidden bg-zinc-800">
 
                 <span className="absolute left-4 top-4 z-10 rounded-full bg-white px-3 py-1 text-xs font-medium text-black">
@@ -390,7 +296,7 @@ export default async function Home({ searchParams }) {
 
               </div>
 
-              {/* INFORMASI PRODUK */}
+              {/* PRODUCT INFORMATION */}
               <div className="p-5">
 
                 <p className="text-xs text-zinc-400">
@@ -413,12 +319,12 @@ export default async function Home({ searchParams }) {
                   })}
                 </p>
 
-                <a
+                <Link
                   href={`/products/${product.id}`}
                   className="mt-5 block rounded-full bg-white py-3 text-center text-sm font-semibold text-black transition-all duration-300 hover:bg-zinc-300 active:scale-95"
                 >
                   View Product ↗
-                </a>
+                </Link>
 
               </div>
 
@@ -428,7 +334,7 @@ export default async function Home({ searchParams }) {
 
         </div>
 
-        {/* PRODUK KOSONG */}
+        {/* EMPTY STATE */}
         {products.length === 0 && (
 
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 py-16 text-center">
@@ -447,12 +353,12 @@ export default async function Home({ searchParams }) {
 
             {search && (
 
-              <a
+              <Link
                 href="/#produk"
                 className="mt-6 inline-block rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-zinc-300"
               >
                 Show All Products
-              </a>
+              </Link>
 
             )}
 

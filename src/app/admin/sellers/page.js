@@ -1,16 +1,19 @@
 
+import Link from "next/link";
 import { requireRole } from "@/lib/authorization";
 import { getSellers } from "@/queries/sellers";
 import { approveSeller, rejectSeller } from "../actions";
+import VeloraNavbar from "@/components/VeloraNavbar";
 
 export const dynamic = "force-dynamic";
 
 export default async function SellerApprovalPage({ searchParams }) {
-  await requireRole("admin");
+  const admin = await requireRole("admin");
 
   const sellers = await getSellers();
   const params = await searchParams;
 
+  // STATISTIK SELLER
   const pending = sellers.filter(
     (seller) => seller.status === "pending"
   ).length;
@@ -26,28 +29,10 @@ export default async function SellerApprovalPage({ searchParams }) {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-black/80 px-6 py-5 backdrop-blur-xl md:px-12">
+      {/* NAVBAR BERSAMA - 80PX */}
+      <VeloraNavbar user={admin} />
 
-        <div>
-          <h1 className="text-2xl font-black tracking-widest">
-            VELORA
-          </h1>
-
-          <p className="mt-1 text-xs tracking-widest text-zinc-400">
-            ADMIN DASHBOARD
-          </p>
-        </div>
-
-        <a
-          href="/admin"
-          className="text-sm text-zinc-400 transition-all hover:text-white"
-        >
-          ← Back to Dashboard
-        </a>
-
-      </nav>
-
+      {/* MAIN CONTENT */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-12">
 
         {/* HEADER */}
@@ -57,31 +42,49 @@ export default async function SellerApprovalPage({ searchParams }) {
             SELLER MANAGEMENT
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <h1 className="text-4xl font-black tracking-tight md:text-6xl">
             Seller Approval.
-          </h2>
+          </h1>
 
           <p className="mt-4 text-zinc-400">
             Review and manage seller applications.
           </p>
 
+          <Link
+            href="/admin"
+            className="mt-6 inline-block text-sm text-zinc-400 transition hover:text-white"
+          >
+            ← Back to Admin Dashboard
+          </Link>
+
         </div>
 
-        {/* SUCCESS MESSAGE */}
+        {/* SUCCESS MESSAGE - APPROVED */}
         {params?.success === "approved" && (
-          <div role="status" className="mt-8 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-400">
-            Seller berhasil disetujui.
+          <div
+            role="status"
+            className="mt-8 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-400"
+          >
+            ✓ Seller berhasil disetujui.
           </div>
         )}
 
+        {/* SUCCESS MESSAGE - REJECTED */}
         {params?.success === "rejected" && (
-          <div role="status" className="mt-8 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div
+            role="status"
+            className="mt-8 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400"
+          >
             Pendaftaran Seller berhasil ditolak.
           </div>
         )}
 
+        {/* ERROR MESSAGE */}
         {params?.error === "not-updated" && (
-          <div role="alert" className="mt-8 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
+          <div
+            role="alert"
+            className="mt-8 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400"
+          >
             Status gagal diubah. Seller mungkin sudah diproses.
           </div>
         )}
@@ -89,15 +92,16 @@ export default async function SellerApprovalPage({ searchParams }) {
         {/* STATISTICS */}
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+          {/* PENDING SELLERS */}
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-500">
 
             <p className="text-sm text-zinc-400">
               Pending Sellers
             </p>
 
-            <h3 className="mt-4 text-5xl font-black text-yellow-400">
+            <h2 className="mt-4 text-5xl font-black text-yellow-400">
               {pending}
-            </h3>
+            </h2>
 
             <p className="mt-3 text-xs text-zinc-500">
               Waiting for approval
@@ -105,15 +109,16 @@ export default async function SellerApprovalPage({ searchParams }) {
 
           </div>
 
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+          {/* APPROVED SELLERS */}
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-500">
 
             <p className="text-sm text-zinc-400">
               Approved Sellers
             </p>
 
-            <h3 className="mt-4 text-5xl font-black text-green-400">
+            <h2 className="mt-4 text-5xl font-black text-green-400">
               {approved}
-            </h3>
+            </h2>
 
             <p className="mt-3 text-xs text-zinc-500">
               Ready to sell
@@ -121,15 +126,16 @@ export default async function SellerApprovalPage({ searchParams }) {
 
           </div>
 
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+          {/* REJECTED SELLERS */}
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-500">
 
             <p className="text-sm text-zinc-400">
               Rejected Sellers
             </p>
 
-            <h3 className="mt-4 text-5xl font-black text-red-400">
+            <h2 className="mt-4 text-5xl font-black text-red-400">
               {rejected}
-            </h3>
+            </h2>
 
             <p className="mt-3 text-xs text-zinc-500">
               Application rejected
@@ -142,7 +148,7 @@ export default async function SellerApprovalPage({ searchParams }) {
         {/* SELLER LIST */}
         <section className="mt-14">
 
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 
             <h2 className="text-2xl font-black">
               All Sellers.
@@ -168,7 +174,8 @@ export default async function SellerApprovalPage({ searchParams }) {
                   {/* STORE INFORMATION */}
                   <div className="flex min-w-0 items-center gap-4">
 
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-black text-3xl grayscale">
+                    {/* STORE ICON */}
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-black text-3xl">
                       🏪
                     </div>
 
@@ -190,7 +197,7 @@ export default async function SellerApprovalPage({ searchParams }) {
 
                   </div>
 
-                  {/* STATUS */}
+                  {/* STATUS BADGE */}
                   <span
                     className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase ${
                       seller.status === "pending"
@@ -206,8 +213,9 @@ export default async function SellerApprovalPage({ searchParams }) {
                 </div>
 
                 {/* STORE DESCRIPTION */}
-                <p className="mt-5 text-sm text-zinc-400">
-                  {seller.description || "Belum ada deskripsi toko."}
+                <p className="mt-5 whitespace-pre-wrap break-words text-sm text-zinc-400">
+                  {seller.description ||
+                    "Belum ada deskripsi toko."}
                 </p>
 
                 {/* APPROVAL BUTTONS */}
@@ -215,7 +223,7 @@ export default async function SellerApprovalPage({ searchParams }) {
 
                   <div className="mt-6 flex flex-wrap gap-3 border-t border-zinc-800 pt-5">
 
-                    {/* APPROVE */}
+                    {/* APPROVE SELLER */}
                     <form action={approveSeller}>
 
                       <input
@@ -233,7 +241,7 @@ export default async function SellerApprovalPage({ searchParams }) {
 
                     </form>
 
-                    {/* REJECT */}
+                    {/* REJECT SELLER */}
                     <form action={rejectSeller}>
 
                       <input
@@ -259,11 +267,16 @@ export default async function SellerApprovalPage({ searchParams }) {
 
             ))}
 
+            {/* EMPTY STATE */}
             {sellers.length === 0 && (
 
               <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-12 text-center">
 
-                <h3 className="text-xl font-bold">
+                <div className="text-5xl">
+                  🏪
+                </div>
+
+                <h3 className="mt-5 text-xl font-bold">
                   No Sellers Found.
                 </h3>
 
