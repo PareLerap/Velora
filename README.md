@@ -2,124 +2,273 @@
 
 **Everything You Need, In One Place.**
 
-VELORA merupakan aplikasi e-commerce marketplace berbasis web yang dikembangkan menggunakan Next.js. Aplikasi ini dirancang untuk menghubungkan penjual dan pembeli dalam satu platform digital dengan sistem pengelolaan produk, toko, transaksi, dan pengguna.
+VELORA merupakan aplikasi e-commerce marketplace berbasis web yang dikembangkan menggunakan Next.js, Tailwind CSS, dan PostgreSQL. Aplikasi ini menghubungkan penjual dan pembeli dalam satu platform digital dengan sistem pengelolaan produk, toko, keranjang belanja, transaksi, dan pengguna.
+
+VELORA menerapkan sistem multi-role yang terdiri dari Admin, Seller, dan Buyer. Setiap pengguna memiliki hak akses dan fitur yang berbeda sesuai dengan perannya.
 
 ## 1. Latar Belakang
 
-Perkembangan teknologi informasi mendorong aktivitas jual beli beralih ke platform digital. Marketplace menjadi salah satu solusi yang memudahkan penjual dalam memasarkan produk dan pembeli dalam menemukan barang yang dibutuhkan.
+Perkembangan teknologi informasi membuat aktivitas jual beli semakin banyak dilakukan melalui platform digital. Marketplace menjadi salah satu solusi yang memudahkan penjual dalam memasarkan produknya dan membantu pembeli menemukan barang yang dibutuhkan.
 
-VELORA dikembangkan sebagai aplikasi marketplace yang menyediakan sistem pengelolaan dengan beberapa jenis pengguna, yaitu Admin, Seller, dan Buyer. Setiap pengguna memiliki hak akses dan fungsi yang berbeda sesuai perannya.
+VELORA dikembangkan sebagai aplikasi marketplace dengan sistem pengelolaan yang terintegrasi, mulai dari pendaftaran pengguna, pengelolaan toko, katalog produk, keranjang belanja, hingga pemrosesan pesanan.
 
 ## 2. Tujuan Pengembangan
 
 - Membangun platform marketplace berbasis web.
-- Mempermudah penjual dalam mengelola toko dan produk.
-- Mempermudah pembeli dalam mencari dan melakukan pemesanan produk.
-- Menyediakan pengelolaan transaksi dan pesanan secara terstruktur.
-- Menerapkan sistem autentikasi dan hak akses berdasarkan role pengguna.
+- Mempermudah Seller dalam mengelola toko, produk, dan pesanan.
+- Mempermudah Buyer mencari, memilih, dan membeli produk.
+- Menerapkan sistem keranjang belanja dan checkout.
+- Menyediakan pengelolaan transaksi yang terstruktur.
+- Menerapkan autentikasi dan otorisasi berdasarkan role pengguna.
+- Mengintegrasikan aplikasi dengan database PostgreSQL.
 
 ## 3. Teknologi yang Digunakan
 
 | Teknologi | Kegunaan |
 |---|---|
-| Next.js | Framework pengembangan aplikasi web |
+| Next.js | Framework utama aplikasi |
 | React.js | Membangun komponen antarmuka |
 | JavaScript (JSX) | Bahasa pemrograman aplikasi |
-| Tailwind CSS | Mengatur tampilan dan desain |
-| PostgreSQL | Sistem manajemen basis data |
-| Raw SQL | Membuat dan mengelola query database |
-| Git & GitHub | Version control dan penyimpanan kode |
+| Tailwind CSS | Styling dan desain responsif |
+| PostgreSQL | Penyimpanan data aplikasi |
+| Raw SQL | Pengelolaan dan manipulasi database |
+| Node.js | Runtime JavaScript |
+| bcryptjs | Hashing dan verifikasi password |
+| Git & GitHub | Version control dan repository |
 
 ## 4. Jenis Pengguna dan Hak Akses
 
 ### Admin
+
+Admin memiliki hak akses untuk mengelola aktivitas marketplace, meliputi:
+
+- Melihat dashboard Admin.
 - Mengelola data pengguna.
-- Menyetujui atau menolak pendaftaran seller.
+- Menyetujui atau menolak pendaftaran Seller.
 - Mengelola kategori produk.
-- Menghapus produk yang bermasalah.
+- Mengawasi data produk marketplace.
+- Mengelola produk sesuai hak akses Admin.
 
 ### Seller
+
+Seller merupakan pengguna yang dapat mengelola toko setelah mendapatkan persetujuan Admin.
+
+Fitur Seller meliputi:
+
 - Mengelola informasi toko.
-- Menambahkan, mengubah, dan menghapus produk.
-- Mengelola stok produk.
-- Melihat pesanan masuk.
+- Menambahkan produk baru.
+- Mengubah informasi produk.
+- Mengelola harga dan stok.
+- Mengaktifkan atau menonaktifkan produk.
+- Melihat pesanan yang masuk.
 - Memperbarui status pesanan.
+- Mengelola produk berdasarkan toko masing-masing.
 
 ### Buyer
-- Melihat dan mencari produk.
-- Mengelola profil pengguna.
-- Menambahkan produk ke keranjang.
-- Melakukan checkout.
+
+Buyer merupakan pengguna yang dapat melakukan aktivitas pembelian produk.
+
+Fitur Buyer meliputi:
+
+- Melihat katalog dan detail produk.
+- Mencari produk berdasarkan kata kunci.
+- Melihat kategori produk.
+- Menambahkan produk ke keranjang belanja.
+- Menambah atau mengurangi jumlah barang.
+- Menghapus produk dari keranjang.
+- Melakukan pembelian langsung melalui Buy Now.
+- Melakukan checkout dari keranjang.
 - Melihat riwayat dan status pesanan.
-- Memberikan ulasan setelah pesanan selesai.
+- Memberikan rating dan ulasan setelah pesanan selesai.
 
 ### Guest
-- Melihat halaman utama marketplace.
-- Melihat daftar dan detail produk.
-- Melihat kategori produk.
-- Melakukan login atau registrasi untuk mengakses fitur pengguna.
 
-## 5. Fitur Utama yang Direncanakan
+Pengunjung yang belum login dapat:
 
-1. **Authentication & Authorization** — Login, registrasi, dan pengaturan hak akses pengguna.
-2. **Product Management** — Pengelolaan produk dan stok.
-3. **Category Management** — Pengelolaan kategori produk.
-4. **Store Management** — Pengelolaan informasi toko seller.
-5. **Shopping Cart** — Pengelolaan keranjang belanja.
-6. **Checkout** — Proses pembuatan pesanan tanpa payment gateway.
-7. **Order Management** — Pengelolaan dan pelacakan pesanan.
-8. **Review & Rating** — Penilaian produk berdasarkan pesanan yang telah selesai.
+- Melihat homepage VELORA.
+- Menjelajahi katalog produk.
+- Melihat informasi dan detail produk.
+- Mengakses halaman login dan registrasi.
 
-## 6. Struktur Database yang Direncanakan
+## 5. Fitur Utama
 
-Database VELORA direncanakan memiliki tabel berikut:
+### 5.1 Authentication & Authorization
+
+VELORA menyediakan sistem registrasi, login, logout, dan pengaturan hak akses berdasarkan role.
+
+Password pengguna disimpan menggunakan bcryptjs. Sistem juga membatasi akses halaman serta operasi tertentu sesuai dengan role pengguna.
+
+### 5.2 Product Management
+
+Seller dapat melakukan pengelolaan produk, seperti:
+
+- Menambahkan produk.
+- Mengubah informasi produk.
+- Mengelola harga dan stok.
+- Mengaktifkan atau menonaktifkan produk.
+- Mengelola gambar produk.
+
+Produk yang tidak aktif, stoknya habis, atau berasal dari toko yang belum disetujui tidak ditampilkan dalam katalog All Products.
+
+### 5.3 Category Management
+
+Admin dapat menambahkan, mengubah, dan menghapus kategori produk. Kategori digunakan untuk mengelompokkan produk dalam marketplace.
+
+### 5.4 Store Management
+
+Seller dapat mengelola informasi toko. Toko harus mendapatkan persetujuan Admin agar produk dapat dipasarkan.
+
+### 5.5 Shopping Cart
+
+VELORA menyediakan sistem keranjang belanja yang terhubung langsung dengan PostgreSQL.
+
+Fitur keranjang meliputi:
+
+- Menambahkan produk ke keranjang.
+- Menyimpan beberapa produk.
+- Mengubah jumlah barang menggunakan tombol tambah dan kurang.
+- Menghapus produk dari keranjang.
+- Menghitung subtotal dan total harga.
+- Menampilkan jumlah barang pada ikon keranjang di Navbar.
+- Menyimpan isi keranjang setelah halaman di-refresh.
+
+### 5.6 Checkout
+
+VELORA menyediakan dua metode pemesanan:
+
+**Buy Now**
+
+Buyer dapat membeli produk secara langsung dari halaman detail produk.
+
+**Checkout Cart**
+
+Buyer dapat melakukan checkout terhadap seluruh produk dalam keranjang.
+
+Sistem checkout melakukan validasi stok, harga, status produk, dan status toko sebelum pesanan dibuat.
+
+Jika produk berasal dari Seller berbeda, sistem membuat pesanan terpisah untuk setiap Seller.
+
+Proses checkout menggunakan transaksi database PostgreSQL dengan mekanisme `BEGIN`, `COMMIT`, dan `ROLLBACK` untuk menjaga konsistensi data.
+
+VELORA belum menggunakan payment gateway. Pesanan yang berhasil dibuat memiliki status awal `pending`.
+
+### 5.7 Order Management
+
+Sistem menyediakan pengelolaan pesanan dengan status:
+
+- `pending`
+- `processing`
+- `shipped`
+- `completed`
+- `cancelled`
+
+Seller dapat memperbarui status pesanan melalui dashboard, sedangkan Buyer dapat melihat status pesanan melalui halaman My Orders.
+
+### 5.8 Review & Rating
+
+Buyer dapat memberikan ulasan terhadap produk yang sudah dibeli dengan pesanan berstatus `completed`.
+
+Fitur ulasan meliputi:
+
+- Rating 1–5 bintang.
+- Komentar produk.
+- Perhitungan rata-rata rating.
+- Tampilan ulasan pada halaman detail produk.
+- Pembatasan satu ulasan per Buyer untuk setiap produk.
+
+Data ulasan tersimpan di database PostgreSQL.
+
+### 5.9 Search & Product Catalog
+
+VELORA menyediakan fitur pencarian produk berdasarkan kata kunci.
+
+Sistem menampilkan produk yang sesuai dengan pencarian dan memberikan informasi jika tidak ditemukan produk yang cocok.
+
+Halaman All Products menyediakan daftar produk yang tersedia untuk dibeli.
+
+## 6. Struktur Database
+
+VELORA menggunakan PostgreSQL dengan tabel utama berikut:
 
 | Tabel | Fungsi |
 |---|---|
-| users | Menyimpan data pengguna |
-| stores | Menyimpan informasi toko |
-| categories | Menyimpan kategori produk |
-| products | Menyimpan data produk |
-| carts | Menyimpan keranjang pengguna |
-| cart_items | Menyimpan detail isi keranjang |
-| orders | Menyimpan data pesanan |
-| order_items | Menyimpan detail produk dalam pesanan |
-| reviews | Menyimpan ulasan dan rating |
+| `users` | Menyimpan data akun dan role pengguna |
+| `stores` | Menyimpan informasi toko |
+| `categories` | Menyimpan kategori produk |
+| `products` | Menyimpan data produk, harga, gambar, dan stok |
+| `carts` | Menyimpan keranjang Buyer |
+| `cart_items` | Menyimpan isi keranjang |
+| `orders` | Menyimpan data pesanan |
+| `order_items` | Menyimpan detail produk dalam pesanan |
+| `reviews` | Menyimpan rating dan ulasan produk |
+
+Relasi database digunakan untuk menghubungkan pengguna, toko, produk, pesanan, keranjang, dan ulasan.
 
 ## 7. Instalasi dan Menjalankan Project
 
-Pastikan Node.js dan npm sudah terpasang.
+### Persyaratan
 
-**Langkah 1 — Clone repository**
+Pastikan perangkat telah memiliki:
+
+- Node.js
+- npm
+- PostgreSQL
+- Git
+
+### Langkah 1 — Clone Repository
 
 ```bash
 git clone https://github.com/PareLerap/Velora.git
 ```
 
-**Langkah 2 — Masuk ke folder project**
+### Langkah 2 — Masuk ke Folder Project
 
 ```bash
 cd Velora
 ```
 
-**Langkah 3 — Install dependencies**
+### Langkah 3 — Install Dependencies
 
 ```bash
 npm install
 ```
 
-**Langkah 4 — Jalankan development server**
+### Langkah 4 — Konfigurasi Database
+
+Buat database PostgreSQL bernama `VELORA` melalui pgAdmin atau PostgreSQL.
+
+Siapkan tabel sesuai skema database proyek.
+
+Atur koneksi database melalui file `.env.local` sesuai konfigurasi yang digunakan dalam `src/lib/db.js`.
+
+File `.env.local` berisi konfigurasi lokal dan tidak boleh diunggah ke GitHub.
+
+### Langkah 5 — Jalankan Development Server
 
 ```bash
 npm run dev
 ```
 
-**Langkah 5 — Buka aplikasi**
+### Langkah 6 — Buka Aplikasi
 
-Akses alamat berikut melalui browser:
+Akses alamat:
 
 ```text
 http://localhost:3000
+```
+
+### Langkah 7 — Production Build
+
+Untuk memeriksa apakah aplikasi berhasil dikompilasi:
+
+```bash
+npm run build
+```
+
+Menjalankan aplikasi dalam mode production:
+
+```bash
+npm run start
 ```
 
 ## 8. Struktur Folder Project
@@ -127,45 +276,99 @@ http://localhost:3000
 ```text
 velora/
 ├── public/
+│   └── images/
+│       └── products/
+│
 ├── src/
-│   └── app/
-│       ├── favicon.ico
-│       ├── globals.css
-│       ├── layout.js
-│       └── page.js
+│   ├── app/
+│   │   ├── admin/
+│   │   ├── seller/
+│   │   ├── products/
+│   │   │   ├── page.js
+│   │   │   └── [id]/
+│   │   │       ├── page.js
+│   │   │       ├── actions.js
+│   │   │       └── review-actions.js
+│   │   ├── cart/
+│   │   │   ├── page.js
+│   │   │   ├── actions.js
+│   │   │   └── checkout-actions.js
+│   │   ├── orders/
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── globals.css
+│   │   ├── layout.js
+│   │   └── page.js
+│   │
+│   ├── components/
+│   │   └── VeloraNavbar.jsx
+│   │
+│   ├── lib/
+│   │   ├── db.js
+│   │   ├── auth.js
+│   │   └── authorization.js
+│   │
+│   └── queries/
+│
 ├── .gitignore
 ├── package.json
 ├── package-lock.json
-├── next.config.mjs
 └── README.md
 ```
 
-Struktur folder dapat berkembang sesuai penambahan fitur dan kebutuhan aplikasi.
+Struktur di atas menunjukkan folder dan file utama yang digunakan dalam pengembangan VELORA.
 
-## 9. Pengembangan Project
+## 9. Alur Penggunaan Sistem
 
-Pengembangan VELORA dilakukan secara bertahap, meliputi:
+1. Pengguna melakukan registrasi sebagai Buyer atau Seller.
+2. Admin melakukan persetujuan terhadap pendaftaran Seller.
+3. Seller yang telah disetujui dapat mengelola toko dan produk.
+4. Buyer dapat mencari serta melihat detail produk.
+5. Buyer dapat melakukan pembelian langsung atau menambahkan produk ke keranjang.
+6. Sistem memvalidasi stok dan membuat pesanan.
+7. Seller menerima dan memproses pesanan.
+8. Buyer memantau status pesanan.
+9. Setelah pesanan selesai, Buyer dapat memberikan rating dan ulasan produk.
 
-1. Inisialisasi project dan pembuatan tampilan awal.
-2. Perancangan database PostgreSQL.
-3. Implementasi autentikasi dan hak akses pengguna.
-4. Pengembangan halaman marketplace dan pengelolaan produk.
-5. Implementasi fitur keranjang dan checkout.
-6. Pengembangan dashboard seller dan admin.
-7. Pengujian fitur dan perbaikan sistem.
+## 10. Pengujian Sistem
 
-## 10. Status Pengembangan
+Beberapa pengujian yang telah dilakukan selama pengembangan:
 
-Saat README ini dibuat, project telah memiliki:
+- Pengujian login menggunakan password yang salah.
+- Pengujian registrasi dengan email duplikat.
+- Pengujian akses halaman berdasarkan role.
+- Pengujian checkout dan perubahan stok.
+- Pengujian penyimpanan data pesanan di PostgreSQL.
+- Pengujian checkout ketika stok tidak mencukupi.
+- Pengujian penambahan, perubahan jumlah, dan penghapusan produk dalam keranjang.
+- Pengujian checkout keranjang.
+- Pengujian ulasan dan pencegahan ulasan ganda.
+- Pengujian fitur pencarian.
+- Pengujian tampilan produk aktif dan nonaktif.
+- Pengujian kompilasi menggunakan `npm run build`.
 
-- Inisialisasi project Next.js.
-- Konfigurasi Tailwind CSS.
-- Tampilan awal homepage VELORA.
-- Repository GitHub dan version control Git.
+Pengujian dilakukan secara bertahap dan disertai perbaikan ketika ditemukan kesalahan.
 
-Fitur database, autentikasi, transaksi, dan dashboard masih dalam tahap pengembangan.
+## 11. Status Pengembangan
 
-## 11. Repository
+Per 23 November 2026, VELORA telah memiliki fitur utama marketplace yang dapat dijalankan dan diuji.
+
+Fitur yang telah diimplementasikan meliputi:
+
+- Sistem autentikasi dan multi-role.
+- Dashboard Admin dan Seller.
+- Pengelolaan produk dan kategori.
+- Sistem persetujuan Seller.
+- Keranjang belanja.
+- Checkout langsung dan checkout keranjang.
+- Manajemen pesanan.
+- Ulasan dan rating produk.
+- Pencarian dan katalog produk.
+- Validasi stok dan transaksi database.
+
+Proyek berada pada tahap akhir pengujian, perbaikan bug, dan persiapan presentasi.
+
+## 12. Repository
 
 GitHub: https://github.com/PareLerap/Velora
 
