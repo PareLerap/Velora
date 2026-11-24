@@ -96,7 +96,7 @@ Pengunjung yang belum login dapat:
 
 VELORA menyediakan sistem registrasi, login, logout, dan pengaturan hak akses berdasarkan role.
 
-Password pengguna disimpan menggunakan bcryptjs. Sistem juga membatasi akses halaman serta operasi tertentu sesuai dengan role pengguna.
+Password pengguna disimpan dalam bentuk hash menggunakan bcryptjs. Sistem juga membatasi akses halaman serta operasi tertentu sesuai dengan role pengguna.
 
 ### 5.2 Product Management
 
@@ -271,7 +271,33 @@ Menjalankan aplikasi dalam mode production:
 npm run start
 ```
 
-## 8. Struktur Folder Project
+## 8. Akun Demo
+
+Untuk mempermudah proses demonstrasi dan pengujian aplikasi, VELORA menyediakan akun demo berdasarkan masing-masing role pengguna.
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@velora.test | VeloraDemo123! |
+| Seller | testseller@velora.test | VeloraTest123! |
+| Buyer | testbuyer@velora.test | VeloraTest123! |
+
+### Kegunaan Akun Demo
+
+- **Admin:** Menguji dashboard Admin, pengelolaan pengguna, persetujuan Seller, kategori, dan produk.
+- **Seller:** Menguji pengelolaan toko, produk, stok, serta pemrosesan pesanan.
+- **Buyer:** Menguji katalog produk, keranjang belanja, checkout, riwayat pesanan, serta rating dan ulasan.
+
+Akun demo dapat digunakan melalui halaman login:
+
+```text
+http://localhost:3000/login
+```
+
+Pastikan data akun demo telah tersedia dalam database sebelum melakukan pengujian.
+
+Akun tersebut disediakan khusus untuk keperluan demonstrasi dan pengujian lokal, bukan untuk penggunaan pada lingkungan production.
+
+## 9. Struktur Folder Project
 
 ```text
 velora/
@@ -318,7 +344,7 @@ velora/
 
 Struktur di atas menunjukkan folder dan file utama yang digunakan dalam pengembangan VELORA.
 
-## 9. Alur Penggunaan Sistem
+## 10. Alur Penggunaan Sistem
 
 1. Pengguna melakukan registrasi sebagai Buyer atau Seller.
 2. Admin melakukan persetujuan terhadap pendaftaran Seller.
@@ -330,7 +356,7 @@ Struktur di atas menunjukkan folder dan file utama yang digunakan dalam pengemba
 8. Buyer memantau status pesanan.
 9. Setelah pesanan selesai, Buyer dapat memberikan rating dan ulasan produk.
 
-## 10. Pengujian Sistem
+## 11. Pengujian Sistem
 
 Beberapa pengujian yang telah dilakukan selama pengembangan:
 
@@ -349,7 +375,7 @@ Beberapa pengujian yang telah dilakukan selama pengembangan:
 
 Pengujian dilakukan secara bertahap dan disertai perbaikan ketika ditemukan kesalahan.
 
-## 11. Status Pengembangan
+## 12. Status Pengembangan
 
 Per 23 November 2026, VELORA telah memiliki fitur utama marketplace yang dapat dijalankan dan diuji.
 
@@ -368,7 +394,7 @@ Fitur yang telah diimplementasikan meliputi:
 
 Proyek berada pada tahap akhir pengujian, perbaikan bug, dan persiapan presentasi.
 
-## 12. Repository
+## 13. Repository
 
 GitHub: https://github.com/PareLerap/Velora
 
