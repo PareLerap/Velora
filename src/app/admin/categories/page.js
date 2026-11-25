@@ -240,7 +240,7 @@ export default async function ManageCategoriesPage({
 
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
 
             {categories.map((category) => (
 
@@ -255,7 +255,7 @@ export default async function ManageCategoriesPage({
                   <div className="flex min-w-0 items-center gap-4">
 
                     {/* CATEGORY ICON */}
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-black text-2xl font-black">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-black text-2xl font-black">
                       {category.category_name
                         .charAt(0)
                         .toUpperCase()}
