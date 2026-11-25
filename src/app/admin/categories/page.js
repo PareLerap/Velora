@@ -277,9 +277,9 @@ export default async function ManageCategoriesPage({
                   </div>
 
                   {/* PRODUCT COUNT */}
-                  <span className="shrink-0 rounded-full border border-zinc-700 px-3 py-2 text-xs text-zinc-300">
-                    {category.total_products} Products
-                  </span>
+                  <span className="shrink-0 rounded-full border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300">
+  {category.total_products} Products
+</span>
 
                 </div>
 
@@ -419,7 +419,7 @@ export default async function ManageCategoriesPage({
           {/* EMPTY STATE */}
           {categories.length === 0 && (
 
-            <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-12 text-center">
+            <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-8 text-center">
 
               <h3 className="text-xl font-bold">
                 No Categories Found.
