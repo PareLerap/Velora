@@ -1,3 +1,4 @@
+
 # VELORA — E-Commerce Marketplace
 
 **Everything You Need, In One Place.**
@@ -186,6 +187,18 @@ Sistem menampilkan produk yang sesuai dengan pencarian dan memberikan informasi 
 
 Halaman All Products menyediakan daftar produk yang tersedia untuk dibeli.
 
+Katalog demo mencakup produk dari kategori Elektronik, Fashion, Makanan, Kecantikan, dan Rumah Tangga.
+
+Produk dikelola oleh beberapa toko berikut:
+
+| Nama Toko | Kategori Produk |
+|---|---|
+| Velora Tech Store | Elektronik |
+| VELORA Fashion Official | Fashion |
+| Daily Bites | Makanan |
+| Aura Beauty | Kecantikan |
+| Homely Living | Rumah Tangga |
+
 ## 6. Struktur Database
 
 VELORA menggunakan PostgreSQL dengan tabel utama berikut:
@@ -235,29 +248,71 @@ npm install
 
 ### Langkah 4 — Konfigurasi Database
 
-Buat database PostgreSQL bernama `VELORA` melalui pgAdmin atau PostgreSQL.
+Buat database PostgreSQL kosong bernama `velora_db` melalui pgAdmin atau PostgreSQL.
 
-Siapkan tabel sesuai skema database proyek.
+```sql
+CREATE DATABASE velora_db;
+```
 
-Atur koneksi database melalui file `.env.local` sesuai konfigurasi yang digunakan dalam `src/lib/db.js`.
+Project ini menyediakan file backup lengkap database yang berada pada:
 
-File `.env.local` berisi konfigurasi lokal dan tidak boleh diunggah ke GitHub.
+```text
+DATABASE/velora_demo_full.sql
+```
 
-### Langkah 5 — Jalankan Development Server
+File tersebut berisi struktur tabel, relasi, kategori, akun demo, toko, produk, dan data pengujian aplikasi.
+
+Untuk melakukan import database, jalankan perintah berikut melalui terminal pada root folder project:
+
+```bash
+psql -U postgres -d velora_db -v ON_ERROR_STOP=1 -f "DATABASE/velora_demo_full.sql"
+```
+
+Jika perintah `psql` belum tersedia pada PATH Windows, gunakan PowerShell dengan lokasi instalasi PostgreSQL yang sesuai. Contoh untuk PostgreSQL 18:
+
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -d velora_db -v ON_ERROR_STOP=1 -f "DATABASE/velora_demo_full.sql"
+```
+
+Masukkan password PostgreSQL lokal apabila diminta.
+
+File `velora_demo_full.sql` merupakan backup lengkap sehingga tidak perlu menjalankan file SQL 01–04 secara terpisah setelah melakukan import.
+
+Pastikan proses import dilakukan pada database kosong untuk menghindari duplikasi tabel dan data.
+
+### Langkah 5 — Konfigurasi Environment Variables
+
+Buat file `.env.local` pada root folder project.
+
+Sesuaikan nama variabel dan nilai konfigurasi koneksi PostgreSQL dengan konfigurasi yang digunakan pada file `src/lib/db.js`.
+
+Gunakan database `velora_db` dan tambahkan variabel `JWT_SECRET` dengan panjang minimal 32 karakter.
+
+Untuk menghasilkan JWT_SECRET secara acak, jalankan perintah berikut:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Masukkan hasil tersebut sebagai nilai `JWT_SECRET` pada file `.env.local`.
+
+File `.env.local`, password PostgreSQL asli, dan JWT_SECRET bersifat rahasia dan tidak boleh diunggah ke GitHub.
+
+### Langkah 6 — Jalankan Development Server
 
 ```bash
 npm run dev
 ```
 
-### Langkah 6 — Buka Aplikasi
+### Langkah 7 — Buka Aplikasi
 
-Akses alamat:
+Akses alamat berikut melalui browser:
 
 ```text
 http://localhost:3000
 ```
 
-### Langkah 7 — Production Build
+### Langkah 8 — Production Build
 
 Untuk memeriksa apakah aplikasi berhasil dikompilasi:
 
@@ -275,11 +330,15 @@ npm run start
 
 Untuk mempermudah proses demonstrasi dan pengujian aplikasi, VELORA menyediakan akun demo berdasarkan masing-masing role pengguna.
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | admin@velora.test | VeloraDemo123! |
-| Seller | testseller@velora.test | VeloraTest123! |
-| Buyer | testbuyer@velora.test | VeloraTest123! |
+| Role | Email | Password | Nama Toko |
+|---|---|---|---|
+| Admin | admin@velora.test | VeloraDemo123! | - |
+| Seller | seller@velora.test | VeloraDemo2026! | Velora Tech Store |
+| Seller | testseller@velora.test | VeloraTest123! | VELORA Fashion Official |
+| Seller | dailybites@velora.test | VeloraTest123! | Daily Bites |
+| Seller | aurabeauty@velora.test | VeloraTest123! | Aura Beauty |
+| Seller | homelyliving@velora.test | VeloraTest123! | Homely Living |
+| Buyer | testbuyer@velora.test | VeloraTest123! | - |
 
 ### Kegunaan Akun Demo
 
@@ -293,14 +352,22 @@ Akun demo dapat digunakan melalui halaman login:
 http://localhost:3000/login
 ```
 
-Pastikan data akun demo telah tersedia dalam database sebelum melakukan pengujian.
+Data akun demo telah disertakan dalam backup database `velora_demo_full.sql`.
 
-Akun tersebut disediakan khusus untuk keperluan demonstrasi dan pengujian lokal, bukan untuk penggunaan pada lingkungan production.
+Seluruh akun demo disediakan khusus untuk keperluan demonstrasi dan pengujian lokal, bukan untuk penggunaan pada lingkungan production.
 
 ## 9. Struktur Folder Project
 
 ```text
 velora/
+├── DATABASE/
+│   ├── 01_create_tables.sql
+│   ├── 02_insert_data.sql
+│   ├── 03_update_tables.sql
+│   ├── 04_update_images.sql
+│   ├── velora_demo_full.sql
+│   └── generate_password.cjs
+│
 ├── public/
 │   └── images/
 │       └── products/
@@ -344,6 +411,8 @@ velora/
 
 Struktur di atas menunjukkan folder dan file utama yang digunakan dalam pengembangan VELORA.
 
+Seluruh file SQL disimpan pada folder `DATABASE` di luar folder aplikasi.
+
 ## 10. Alur Penggunaan Sistem
 
 1. Pengguna melakukan registrasi sebagai Buyer atau Seller.
@@ -371,13 +440,19 @@ Beberapa pengujian yang telah dilakukan selama pengembangan:
 - Pengujian ulasan dan pencegahan ulasan ganda.
 - Pengujian fitur pencarian.
 - Pengujian tampilan produk aktif dan nonaktif.
-- Pengujian kompilasi menggunakan `npm run build`.
+- Pengujian registrasi dan persetujuan Seller baru.
+- Pengujian pengelolaan toko oleh Seller.
+- Pengujian penambahan produk dari beberapa toko.
+- Pengujian kompilasi menggunakan `npm run build` selama pengembangan.
+- Pengujian backup dan import database.
+- Pengujian import backup pada database terpisah bernama `velora_test`.
+- Verifikasi jumlah data setelah proses import database.
 
 Pengujian dilakukan secara bertahap dan disertai perbaikan ketika ditemukan kesalahan.
 
 ## 12. Status Pengembangan
 
-Per 23 November 2026, VELORA telah memiliki fitur utama marketplace yang dapat dijalankan dan diuji.
+Per 25 November 2026, VELORA telah memiliki fitur utama marketplace yang dapat dijalankan dan diuji.
 
 Fitur yang telah diimplementasikan meliputi:
 
@@ -385,14 +460,20 @@ Fitur yang telah diimplementasikan meliputi:
 - Dashboard Admin dan Seller.
 - Pengelolaan produk dan kategori.
 - Sistem persetujuan Seller.
+- Pengelolaan beberapa toko dalam satu marketplace.
 - Keranjang belanja.
 - Checkout langsung dan checkout keranjang.
 - Manajemen pesanan.
 - Ulasan dan rating produk.
 - Pencarian dan katalog produk.
 - Validasi stok dan transaksi database.
+- Backup lengkap database beserta data demo.
 
-Proyek berada pada tahap akhir pengujian, perbaikan bug, dan persiapan presentasi.
+Katalog produk telah diperbarui dengan penambahan beberapa toko dan produk dari berbagai kategori.
+
+Backup database telah berhasil diimpor pada database pengujian terpisah untuk memastikan struktur dan data dapat digunakan kembali.
+
+Proyek berada pada tahap akhir pengujian aplikasi, pemeriksaan production build, dan persiapan presentasi.
 
 ## 13. Repository
 
